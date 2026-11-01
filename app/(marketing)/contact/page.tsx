@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
 
-import { ContactForm } from "@/components/sections/contact-form";
+import { InvitationForm } from "@/components/sections/invitation-form";
+import { Stage } from "@/components/obsidian/stage";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch with us.",
+  title: "Invitation",
+  description: "Tell us what you are trying to see.",
 };
 
 export default function ContactPage() {
   return (
-    <section className="mx-auto w-full max-w-xl px-4 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">Contact us</h1>
-      <p className="text-muted-foreground mt-2 text-sm">
-        Have a question or want to work together? Fill in the form below.
-      </p>
-      <p className="text-muted-foreground mt-2 text-sm">
-        Demo note: this form validates your input but does not send anything
-        yet. Connect a Server Action or email provider to enable delivery.
-      </p>
+    <Stage>
+      <main className="contact">
+        <header className="contact__head">
+          <p className="contact__index">07 / 07 — Invitation</p>
+          <h1 className="contact__title">Tell us what you are trying to see.</h1>
+          <p className="contact__lede">
+            A site, a room, a feeling you cannot name yet. We answer within
+            three working days. This is a study — nothing leaves your browser.
+          </p>
+        </header>
 
-      <div className="mt-8">
-        <ContactForm />
-      </div>
-    </section>
+        <InvitationForm />
+      </main>
+    </Stage>
   );
 }
