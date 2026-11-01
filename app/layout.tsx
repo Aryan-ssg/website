@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bodoni_Moda, Geist, Geist_Mono } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
+
+const bodoni = Bodoni_Moda({
+  variable: "--font-bodoni",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,18 +23,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Business Website",
-    template: "%s | Business Website",
+    default: "OBSIDIAN — Architecture of the Unseen",
+    template: "%s | OBSIDIAN",
   },
   description:
-    "A Next.js starter for business websites and web applications.",
+    "A spatial design studio working between mass, light, and silence. Rendered and drawn.",
+  openGraph: {
+    title: "OBSIDIAN — Architecture of the Unseen",
+    description:
+      "A spatial design studio working between mass, light, and silence.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bodoni.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}
