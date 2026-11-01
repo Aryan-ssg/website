@@ -35,8 +35,14 @@ export function Threshold() {
           Architecture of the Unseen
         </h1>
 
-        <span className="title__line title__a" aria-hidden="true">
-          Architecture
+        <span
+          className="reveal reveal--a"
+          aria-hidden="true"
+          style={{ "--reveal-delay": "0.08s" } as CSSProperties}
+        >
+          <span className="title__line title__a">
+            <span className="reveal__inner">Architecture</span>
+          </span>
         </span>
 
         <figure className="object" aria-hidden="true">
@@ -52,8 +58,14 @@ export function Threshold() {
           <DrawnSection />
         </figure>
 
-        <span className="title__line title__b" aria-hidden="true">
-          of the Unseen
+        <span
+          className="reveal reveal--b"
+          aria-hidden="true"
+          style={{ "--reveal-delay": "0.26s" } as CSSProperties}
+        >
+          <span className="title__line title__b">
+            <span className="reveal__inner">of the Unseen</span>
+          </span>
         </span>
       </div>
 

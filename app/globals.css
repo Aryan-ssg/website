@@ -231,6 +231,17 @@
     background-size: 180px 180px;
   }
 
+  /* pointer-reactive dust */
+  .dust {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
   /* edge vignette */
   .vignette {
     position: fixed;
@@ -440,11 +451,42 @@
     display: contents;
   }
   .title__line {
+    display: block;
     font-family: var(--font-display);
     text-transform: uppercase;
     font-weight: 400;
     white-space: nowrap;
     color: var(--bone);
+  }
+
+  /* masked reveal — the type rises out of its own baseline */
+  .reveal {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.03em;
+    transform: translate3d(
+      calc(var(--px, 0) * -7px),
+      calc(var(--py, 0) * -5px),
+      0
+    );
+  }
+  .reveal--b {
+    transform: translate3d(
+      calc(var(--px, 0) * -4px),
+      calc(var(--py, 0) * -3px),
+      0
+    );
+  }
+  .reveal__inner {
+    display: block;
+    transform: translate3d(0, 112%, 0);
+    animation: reveal-rise 1.15s var(--ease-out-expo) both;
+    animation-delay: var(--reveal-delay, 0.1s);
+  }
+  @keyframes reveal-rise {
+    to {
+      transform: translate3d(0, 0, 0);
+    }
   }
   .title__a {
     font-size: clamp(38px, 9.4vw, 168px);
@@ -479,6 +521,30 @@
     min-height: 180px;
     display: grid;
     place-items: center;
+    transform: translate3d(
+      calc(var(--px, 0) * 13px),
+      calc(var(--py, 0) * 8px),
+      0
+    );
+    animation: object-in 1.6s 0.05s var(--ease-out-expo) backwards;
+  }
+  @keyframes object-in {
+    from {
+      opacity: 0;
+      filter: blur(8px);
+    }
+  }
+  .threshold__nav {
+    animation: settle 1s var(--ease-out-expo) backwards;
+  }
+  .threshold__foot {
+    animation: settle 1.1s 0.18s var(--ease-out-expo) backwards;
+  }
+  @keyframes settle {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 6px, 0);
+    }
   }
 
   .mass {
@@ -537,6 +603,17 @@
       inset 0 -70px 100px -70px rgb(255 77 28 / 55%),
       inset 1px 0 0 rgb(237 232 220 / 9%),
       inset -1px 0 0 rgb(0 0 0 / 90%);
+    transform-origin: 50% 92%;
+    animation: breathe 6.4s var(--ease-in-out-quint) infinite;
+  }
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.012);
+    }
   }
   .mass__body::before {
     content: "";
@@ -911,6 +988,18 @@
       top: 30%;
     }
     .bloom.is-on {
+      animation: none;
+    }
+    .reveal__inner {
+      animation: none;
+      transform: none;
+    }
+    .mass__body {
+      animation: none;
+    }
+    .object,
+    .threshold__nav,
+    .threshold__foot {
       animation: none;
     }
     .mass,

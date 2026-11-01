@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { DustField } from "./dust";
+
 type Mode = "rendered" | "drawn";
 
 const STORAGE_KEY = "obsidian:mode";
@@ -15,6 +17,7 @@ export function Stage({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>("rendered");
   const [bloom, setBloom] = useState(false);
   const mounted = useRef(false);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   // Restore the state for this session, and allow sharing a state via URL.
   useEffect(() => {
@@ -68,10 +71,54 @@ export function Stage({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [toggle]);
 
+  // Pointer position feeds the depth planes. Values are eased on rAF so the
+  // parallax trails the cursor instead of snapping to it.
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const node: HTMLDivElement = stage;
+
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let frame = 0;
+
+    function tick() {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      node.style.setProperty("--px", currentX.toFixed(4));
+      node.style.setProperty("--py", currentY.toFixed(4));
+
+      if (
+        Math.abs(targetX - currentX) > 0.0004 ||
+        Math.abs(targetY - currentY) > 0.0004
+      ) {
+        frame = requestAnimationFrame(tick);
+      } else {
+        frame = 0;
+      }
+    }
+
+    function onPointerMove(event: PointerEvent) {
+      targetX = (event.clientX / window.innerWidth - 0.5) * 2;
+      targetY = (event.clientY / window.innerHeight - 0.5) * 2;
+      if (!frame) frame = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
-    <div className="stage" data-mode={mode}>
+    <div className="stage" data-mode={mode} ref={stageRef}>
       <div className="grain" aria-hidden="true" />
       <div className="vignette" aria-hidden="true" />
+      <DustField />
 
       <div className="frame" aria-hidden="true">
         <span className="frame__label">
