@@ -16,14 +16,42 @@ const STORAGE_KEY = "obsidian:mode";
 export function Stage({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>("rendered");
   const [bloom, setBloom] = useState(false);
+  const [silence, setSilence] = useState(false);
   const mounted = useRef(false);
   const stageRef = useRef<HTMLDivElement>(null);
+
+  // A date-seeded light: the monolith's ember shifts each day, so the
+  // threshold is never the same twice.
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const day =
+      new Date().getFullYear() * 10000 +
+      (new Date().getMonth() + 1) * 100 +
+      new Date().getDate();
+    let hash = 2166136261;
+    for (const ch of String(day)) {
+      hash ^= ch.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    }
+    const hue = hash % 360;
+    const rotation = (hash * 1.37) % 360;
+    const glow = 0.16 + (hash % 6) * 0.07;
+    const y = 70 + (hash % 5) * 6;
+
+    stage.style.setProperty("--seed-hue", String(hue));
+    stage.style.setProperty("--seed-rot", String(rotation));
+    stage.style.setProperty("--seed-glow", glow.toFixed(3));
+    stage.style.setProperty("--seed-y", y + "%");
+  }, []);
 
   // Restore the state for this session, and allow sharing a state via URL.
   useEffect(() => {
     mounted.current = true;
     const requested = new URLSearchParams(window.location.search).get("mode");
     const remembered = window.sessionStorage.getItem(STORAGE_KEY);
+    const quiet = window.sessionStorage.getItem("obsidian:silence") === "1";
 
     if (requested === "drawn" || (!requested && remembered === "drawn")) {
       // One-time read of session state on mount; this is the sync point with
@@ -31,12 +59,21 @@ export function Stage({ children }: { children: React.ReactNode }) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setMode("drawn");
     }
+    if (quiet) setSilence(true);
   }, []);
 
   const toggle = useCallback(() => {
     setMode((current) => {
       const next: Mode = current === "rendered" ? "drawn" : "rendered";
       window.sessionStorage.setItem(STORAGE_KEY, next);
+      return next;
+    });
+  }, []);
+
+  const toggleSilence = useCallback(() => {
+    setSilence((current) => {
+      const next = !current;
+      window.sessionStorage.setItem("obsidian:silence", next ? "1" : "0");
       return next;
     });
   }, []);
@@ -50,7 +87,7 @@ export function Stage({ children }: { children: React.ReactNode }) {
     return () => window.clearTimeout(timer);
   }, [mode]);
 
-  // "D" flips the drawing, unless the visitor is typing.
+  // "D" flips the drawing, "S" quiets the stage, unless the visitor is typing.
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -65,57 +102,23 @@ export function Stage({ children }: { children: React.ReactNode }) {
         event.preventDefault();
         toggle();
       }
+      if (!isTyping && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        toggleSilence();
+      }
     }
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [toggle]);
-
-  // Pointer position feeds the depth planes. Values are eased on rAF so the
-  // parallax trails the cursor instead of snapping to it.
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const node: HTMLDivElement = stage;
-
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let frame = 0;
-
-    function tick() {
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
-      node.style.setProperty("--px", currentX.toFixed(4));
-      node.style.setProperty("--py", currentY.toFixed(4));
-
-      if (
-        Math.abs(targetX - currentX) > 0.0004 ||
-        Math.abs(targetY - currentY) > 0.0004
-      ) {
-        frame = requestAnimationFrame(tick);
-      } else {
-        frame = 0;
-      }
-    }
-
-    function onPointerMove(event: PointerEvent) {
-      targetX = (event.clientX / window.innerWidth - 0.5) * 2;
-      targetY = (event.clientY / window.innerHeight - 0.5) * 2;
-      if (!frame) frame = requestAnimationFrame(tick);
-    }
-
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
+  }, [toggle, toggleSilence]);
 
   return (
-    <div className="stage" data-mode={mode} ref={stageRef}>
+    <div
+      className="stage"
+      data-mode={mode}
+      data-silence={silence ? "on" : "off"}
+      ref={stageRef}
+    >
       <div className="grain" aria-hidden="true" />
       <div className="vignette" aria-hidden="true" />
       <DustField />
@@ -152,6 +155,22 @@ export function Stage({ children }: { children: React.ReactNode }) {
         <span>{mode === "rendered" ? "Rendered" : "Drawn"}</span>
         <span className="mode-switch__key" aria-hidden="true">
           D
+        </span>
+      </button>
+
+      <button
+        type="button"
+        className="silence-switch"
+        onClick={toggleSilence}
+        aria-pressed={silence}
+        aria-label={silence ? "Unmute the stage" : "Mute the stage"}
+      >
+        <span className="silence-switch__glyph" aria-hidden="true">
+          {silence ? "▶" : "◈"}
+        </span>
+        <span>{silence ? "Silence" : "Sound"}</span>
+        <span className="mode-switch__key" aria-hidden="true">
+          S
         </span>
       </button>
     </div>

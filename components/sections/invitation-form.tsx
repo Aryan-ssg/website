@@ -9,7 +9,7 @@ import { contactSchema, type ContactFormValues } from "@/lib/validations/contact
 
 type Status = "idle" | "sent" | "failed";
 
-/** Act 07 — the form. Quiet fields, honest result. */
+/** Act 07 — the form. Quiet fields, honest result. data-tilt is on the parent section. */
 export function InvitationForm() {
   const [status, setStatus] = useState<Status>("idle");
   const {

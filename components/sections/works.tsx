@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 
+import { Parallax } from "@/components/obsidian/parallax";
 import { WorkArt, type WorkKind } from "./work-art";
 
 type Project = {
@@ -66,7 +67,7 @@ const delay = (index: number) =>
 /** Act 03 — Selected works, arranged as a horizontal plate rail. */
 export function Works() {
   return (
-    <section className="act act--works" id="works" aria-labelledby="works-title">
+    <section className="act act--works" id="works" aria-labelledby="works-title" data-tilt>
       <p className="act__index" data-reveal>
         03 / 07 — Selected Works
       </p>
@@ -93,19 +94,21 @@ export function Works() {
       >
         {projects.map((project, index) => (
           <li className="work" key={project.name} data-reveal style={delay(index)}>
-            <div className="work__frame">
-              <WorkArt kind={project.kind} />
-              <span className="work__tag" aria-hidden="true">
-                P—{String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="work__status">{project.status}</span>
-              <div className="work__overlay">
-                <span className="work__place">
-                  {project.place} · {project.year}
+            <Parallax className="work__frame-parallax" sensitivity={0.8}>
+              <div className="work__frame">
+                <WorkArt kind={project.kind} />
+                <span className="work__tag" aria-hidden="true">
+                  P—{String(index + 1).padStart(2, "0")}
                 </span>
-                <h3 className="work__name">{project.name}</h3>
+                <span className="work__status">{project.status}</span>
+                <div className="work__overlay">
+                  <span className="work__place">
+                    {project.place} · {project.year}
+                  </span>
+                  <h3 className="work__name">{project.name}</h3>
+                </div>
               </div>
-            </div>
+            </Parallax>
             <div className="work__foot">
               <span>{project.program}</span>
               <span>{project.note}</span>

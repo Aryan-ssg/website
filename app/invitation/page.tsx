@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 
 import { InvitationForm } from "@/components/sections/invitation-form";
-import { Stage } from "@/components/obsidian/stage";
+import { SiteFooter } from "@/components/sections/site-footer";
+import { VanishingForm } from "@/components/obsidian/vanishing-form";
 
 export const metadata: Metadata = {
   title: "Invitation",
   description: "Tell us what you are trying to see.",
 };
 
-export default function ContactPage() {
+export default function InvitationPage() {
   return (
-    <Stage>
+    <>
+      <VanishingForm />
       <main className="contact">
         <header className="contact__head">
           <p className="contact__index">07 / 07 — Invitation</p>
@@ -20,9 +22,9 @@ export default function ContactPage() {
             three working days. This is a study — nothing leaves your browser.
           </p>
         </header>
-
         <InvitationForm />
       </main>
-    </Stage>
+      <SiteFooter />
+    </>
   );
 }

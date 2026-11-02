@@ -37,6 +37,7 @@ export function Process() {
       className="act act--process"
       id="process"
       aria-labelledby="process-title"
+      data-tilt
     >
       <p className="act__index" data-reveal>
         05 / 07 — Process

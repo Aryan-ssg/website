@@ -18,7 +18,7 @@ const delay = (index: number) =>
 /** Act 02 — Manifesto. Static for now; scroll-linked illumination comes later. */
 export function Manifesto() {
   return (
-    <section className="act act--manifesto" aria-labelledby="manifesto-title">
+    <section className="act act--manifesto" aria-labelledby="manifesto-title" data-tilt>
       <p className="act__index" data-reveal>
         02 / 07 — Manifesto
       </p>

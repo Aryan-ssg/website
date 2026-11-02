@@ -6,13 +6,13 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer__inner">
         <nav className="site-footer__acts" aria-label="Site acts">
-          <span>01 · Threshold</span>
-          <span>02 · Manifesto</span>
-          <span>03 · Works</span>
-          <span>04 · Capabilities</span>
-          <span>05 · Process</span>
-          <span>06 · Studio</span>
-          <span>07 · Invitation</span>
+          <Link href="/">01 · Threshold</Link>
+          <Link href="/manifesto">02 · Manifesto</Link>
+          <Link href="/works">03 · Works</Link>
+          <Link href="/capabilities">04 · Capabilities</Link>
+          <Link href="/process">05 · Process</Link>
+          <Link href="/studio">06 · Studio</Link>
+          <Link href="/invitation">07 · Invitation</Link>
         </nav>
 
         <div className="site-footer__meta">

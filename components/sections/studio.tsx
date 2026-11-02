@@ -26,7 +26,7 @@ const materials = [
 /** Act 06 — Studio. A lit arch, the facts, and the material library. */
 export function Studio() {
   return (
-    <section className="act act--studio" id="studio" aria-labelledby="studio-title">
+    <section className="act act--studio" id="studio" aria-labelledby="studio-title" data-tilt>
       <p className="act__index" data-reveal>
         06 / 07 — Studio
       </p>

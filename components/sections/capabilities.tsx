@@ -67,6 +67,7 @@ export function Capabilities() {
       className="act act--capabilities"
       id="capabilities"
       aria-labelledby="capabilities-title"
+      data-tilt
     >
       <p className="act__index" data-reveal>
         04 / 07 — Capabilities
@@ -134,13 +135,17 @@ export function Capabilities() {
               const long = tick % 3 === 0;
               const r1 = 190;
               const r2 = long ? 196 : 193;
+              const x1 = (CENTRE + Math.cos(angle) * r1).toFixed(6);
+              const y1 = (CENTRE + Math.sin(angle) * r1).toFixed(6);
+              const x2 = (CENTRE + Math.cos(angle) * r2).toFixed(6);
+              const y2 = (CENTRE + Math.sin(angle) * r2).toFixed(6);
               return (
                 <line
                   key={tick}
-                  x1={CENTRE + Math.cos(angle) * r1}
-                  y1={CENTRE + Math.sin(angle) * r1}
-                  x2={CENTRE + Math.cos(angle) * r2}
-                  y2={CENTRE + Math.sin(angle) * r2}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
                   className="orbit__tick"
                 />
               );

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { Parallax } from "@/components/obsidian/parallax";
+import { StaggeredText } from "@/components/obsidian/staggered-text";
 
 const draw = (delay: number) => ({ "--d": `${delay}s` }) as CSSProperties;
 
@@ -41,21 +43,23 @@ export function Threshold() {
           style={{ "--reveal-delay": "0.08s" } as CSSProperties}
         >
           <span className="title__line title__a">
-            <span className="reveal__inner">Architecture</span>
+            <StaggeredText stagger={80}>Architecture</StaggeredText>
           </span>
         </span>
 
         <figure className="object" aria-hidden="true">
-          <div className="mass">
-            <div className="mass__halo" />
-            <div className="mass__body">
-              <div className="mass__slit" />
-              <div className="mass__fog" />
+          <Parallax className="object-parallax">
+            <div className="mass">
+              <div className="mass__halo" />
+              <div className="mass__body">
+                <div className="mass__slit" />
+                <div className="mass__fog" />
+              </div>
+              <div className="mass__reflection" />
             </div>
-            <div className="mass__reflection" />
-          </div>
 
-          <DrawnSection />
+            <DrawnSection />
+          </Parallax>
         </figure>
 
         <span
